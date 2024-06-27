@@ -134,8 +134,7 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbhb) "
     __commands = ['BaseModel', 'User', 'State', 'City', 'Amenity',
-                  'Place', 'Review'
-                  ]
+                  'Place', 'Review']
 
     def do_quit(self, arg):
         """Quit command to exit the program
@@ -203,15 +202,31 @@ class HBNBCommand(cmd.Cmd):
         return complete
 
     def do_create(self, arg):
+        args = False
         if not arg:
             print("** class name missing **")
-        elif arg not in self.__commands:
-            print("** class doesn't exist **")
         else:
-            cls_name = arg + "()"
-            my_model = eval(cls_name)
-            my_model.save()
-            print(my_model.id)
+            if " " in arg:
+                cls_, args = arg.split(" ", 1)
+            else:
+                cls_ = arg
+            if cls_ not in self.__commands:
+                print("** class doesn't exist **")
+            else:
+                kwarg, tmp_dict = dict(), dict()
+                if args:
+                    kwarg = args.split(" ")
+                    for kw in kwarg:
+                        kv = re.search(r"(.+)=(.+)", kw)
+                        if kv:
+                            k, v = kv.groups()
+                            v = v.replace("_", " ")
+                            tmp_dict[k] = v
+                    kwarg = convertType(tmp_dict)
+                my_model = eval(cls_)()
+                [setattr(my_model, k, v) for k, v in kwarg.items()]
+                my_model.save()
+                print(my_model.id)
 
     def help_show(self):
         h_str = "".join(["Prints the string presentation of an instance ",
