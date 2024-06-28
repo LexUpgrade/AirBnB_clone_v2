@@ -264,10 +264,8 @@ class HBNBCommand(cmd.Cmd):
         all_objs = storage.all()
         if validateArgs(arg, all_objs, HBNBCommand.__commands.copy()):
             key = ".".join(arg.split())
-            del_ =  all_objs[key]
-            storage.delete(del_)
+            storage.delete(all_objs[key])
             storage.save()
-            storage.reload()
 
     def help_all(self):
         h_str = "".join(["Prints all string representation of all ",
@@ -289,7 +287,6 @@ class HBNBCommand(cmd.Cmd):
         if arg:
             arg = arg.split()[0]
             if arg in commands:
-                print("YES IN command")
                 objects = [str(obj) for i, obj in storage.all(arg).items()]
             else:
                 print("** class doesn't exist **")
