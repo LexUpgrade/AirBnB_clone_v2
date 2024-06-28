@@ -173,7 +173,7 @@ class HBNBCommand(cmd.Cmd):
             if cmd_ in list(command_dict.keys()):
                 i, j = cls_.span()
                 cls_ = arg[i:j].split('.')[0]
-                if cls_ in self.__commands:
+                if cls_ in HBNBCommand.__commands:
                     args = cls_ + ' '
                     if id_n:
                         i, j = id_n.span()
@@ -196,9 +196,9 @@ class HBNBCommand(cmd.Cmd):
 
     def complete_create(self, text, line, beidx, enidx):
         if text:
-            complete = [c for c in self.__commands if c.startswith(text)]
+            complete = [c for c in HBNBCommand.__commands if c.startswith(text)]
         else:
-            complete = self.__commands.copy()
+            complete = HBNBCommand.__commands.copy()
         return complete
 
     def do_create(self, arg):
@@ -210,7 +210,7 @@ class HBNBCommand(cmd.Cmd):
                 cls_, args = arg.split(" ", 1)
             else:
                 cls_ = arg
-            if cls_ not in self.__commands:
+            if cls_ not in HBNBCommand.__commands:
                 print("** class doesn't exist **")
             else:
                 kwarg, tmp_dict = dict(), dict()
@@ -223,9 +223,9 @@ class HBNBCommand(cmd.Cmd):
                             v = v.replace("_", " ")
                             tmp_dict[k] = v
                     kwarg = convertType(tmp_dict)
-                my_model = eval(cls_)()
-                [setattr(my_model, k, v) for k, v in kwarg.items()]
-                my_model.save()
+                my_model = eval(cls_)(**kwarg)
+                storage.new(my_model)
+                storage.save()
                 print(my_model.id)
 
     def help_show(self):
@@ -236,14 +236,14 @@ class HBNBCommand(cmd.Cmd):
 
     def complete_show(self, text, line, beidx, enidx):
         if text:
-            complete = [c for c in self.__commands if c.startswith(text)]
+            complete = [c for c in HBNBCommand.__commands if c.startswith(text)]
         else:
-            complete = self.__commands.copy()
+            complete = HBNBCommand.__commands.copy()
         return complete
 
     def do_show(self, arg):
         all_objs = storage.all()
-        if validateArgs(arg, all_objs, self.__commands.copy()):
+        if validateArgs(arg, all_objs, HBNBCommand.__commands.copy()):
             key = ".".join(arg.split())
             print(all_objs[key])
 
@@ -255,16 +255,17 @@ class HBNBCommand(cmd.Cmd):
 
     def complete_destroy(self, text, line, beidx, enidx):
         if text:
-            complete = [c for c in self.__commands if c.startswith(text)]
+            complete = [c for c in HBNBCommand.__commands if c.startswith(text)]
         else:
             complete = self.commands.copy()
         return complete
 
     def do_destroy(self, arg):
         all_objs = storage.all()
-        if validateArgs(arg, all_objs, self.__commands.copy()):
+        if validateArgs(arg, all_objs, HBNBCommand.__commands.copy()):
             key = ".".join(arg.split())
-            del all_objs[key]
+            del_ =  all_objs[key]
+            storage.delete(del_)
             storage.save()
             storage.reload()
 
@@ -277,26 +278,26 @@ class HBNBCommand(cmd.Cmd):
 
     def complete_all(self, text, line, beidx, enidx):
         if text:
-            complete = [c for c in self.__commands if c.startswith(text)]
+            complete = [c for c in HBNBCommand.__commands if c.startswith(text)]
         else:
-            complete = self.__commands.copy()
+            complete = HBNBCommand.__commands.copy()
         return complete
 
     def do_all(self, arg):
-        all_objs = storage.all()
-
-        objects = list()
-        if not arg:
-            objects.extend([str(obj) for i, obj in all_objs.items()])
-        else:
+        commands = ['BaseModel', 'User', 'Place', 'State', 'City', 'Amenity',
+                    'Review']
+        if arg:
             arg = arg.split()[0]
-            if arg not in self.__commands:
+            if arg in commands:
+                print("YES IN command")
+                objects = [str(obj) for i, obj in storage.all(arg).items()]
+            else:
                 print("** class doesn't exist **")
                 return False
-            else:
-                for k, v in all_objs.items():
-                    if k.rsplit(".")[0] == arg:
-                        objects.append(str(v))
+        else:
+            dic = storage.all()
+            objects = [str(obj) for i, obj in dic.items()]
+
         print(objects)
 
     def help_count(self):
@@ -307,9 +308,9 @@ class HBNBCommand(cmd.Cmd):
 
     def complete_count(self, text, line, beidx, enidx):
         if text:
-            complete = [i for i in self.__commands if i.startswith(text)]
+            complete = [i for i in HBNBCommand.__commands if i.startswith(text)]
         else:
-            complete = self.__commands.copy()
+            complete = HBNBCommand.__commands.copy()
         return complete
 
     def do_count(self, arg):
@@ -318,7 +319,7 @@ class HBNBCommand(cmd.Cmd):
         lst = list()
         if arg is None:
             print("** class name missing **")
-        elif arg not in self.__commands:
+        elif arg not in HBNBCommand.__commands:
             print("** class doesn't exist **")
         else:
             lst.extend([i for i in all_objs.keys() if i.startswith(arg)])
@@ -333,9 +334,9 @@ class HBNBCommand(cmd.Cmd):
 
     def complete_update(self, text, line, beidx, enidx):
         if text:
-            complete = [c for c in self.__commands if c.startswith(text)]
+            complete = [c for c in HBNBCommand.__commands if c.startswith(text)]
         else:
-            complete = self.__commands.copy()
+            complete = HBNBCommand.__commands.copy()
         return complete
 
     def do_update(self, arg):
@@ -345,13 +346,13 @@ class HBNBCommand(cmd.Cmd):
 
         if arg.startswith("***4rOmD4FaUlT***"):
             arg = arg[17:]
-            if validateUpdateArgs(arg, ids, self.__commands):
+            if validateUpdateArgs(arg, ids, HBNBCommand.__commands):
                 cls, id, dictionary = argToDict(arg)
                 print("from argToDict", dictionary)
             else:
                 return False
         else:
-            if validateUpdateArgs(arg, ids, self.__commands):
+            if validateUpdateArgs(arg, ids, HBNBCommand.__commands):
                 cls, id, karg = arg.split(' ', 2)
                 k, v = re.search(r"(.+) (.+)", karg).groups()
                 dictionary = convertType({k: v})
