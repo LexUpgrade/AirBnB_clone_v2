@@ -26,7 +26,7 @@ class FileStorage:
         if cls:
             cls_objs = {}
             for k, v in FileStorage.__objects.items():
-                if type(v) is cls:
+                if type(v).__name__ == cls:
                     cls_objs[k] = v
             return cls_objs
         else:
