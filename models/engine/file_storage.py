@@ -60,7 +60,7 @@ class FileStorage:
     def delete(self, obj=None):
         """Deletes <obj> from <__objects> if it exists, otherwise does nothing
         """
-        if obj and hasattr(obj, "id"):
-            key = "{}.{}".format(obj.id, type(obj).__name__)
+        if obj:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
             if key in FileStorage.__objects.keys():
                 del FileStorage.__objects[key]
