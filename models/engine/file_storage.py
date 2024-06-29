@@ -24,9 +24,11 @@ class FileStorage:
             dictionary.
         """
         if cls:
+            if type(cls) is str:
+                cls = eval(cls)
             cls_objs = {}
             for k, v in FileStorage.__objects.items():
-                if type(v).__name__ == cls:
+                if type(v) is cls:
                     cls_objs[k] = v
             return cls_objs
         else:
@@ -60,7 +62,7 @@ class FileStorage:
     def delete(self, obj=None):
         """Deletes <obj> from <__objects> if it exists, otherwise does nothing
         """
-        if obj:
+        if obj and hasattr(obj, "id"):
             key = "{}.{}".format(type(obj).__name__, obj.id)
             if key in FileStorage.__objects.keys():
                 del FileStorage.__objects[key]
