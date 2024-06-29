@@ -39,7 +39,7 @@ class DBStorage:
                 cls = eval(cls)
             objs = self.__session.query(cls).all()
         else:
-            cls_list = [State, City]
+            cls_list = [State, City, Place, User]
             for cls_ in cls_list:
                 objs.extend(self.__session.query(cls_).all())
 
@@ -61,7 +61,6 @@ class DBStorage:
         """Deletes from the current database session <obj> if specified."""
         if obj:
             self.__session.delete(obj)
-            self.save()
 
     def reload(self):
         """
