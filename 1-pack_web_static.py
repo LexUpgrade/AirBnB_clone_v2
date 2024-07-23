@@ -16,7 +16,7 @@ def do_pack():
     if os.path.isdir("versions") is False:
         local("mkdir -p versions")
     tgz_name = "versions/web_static_{}.tgz".\
-            format(datetime.now().strftime("%Y%m%d%H%M%S"))
+        format(datetime.now().strftime("%Y%m%d%H%M%S"))
     result = local("tar -cvzf {} web_static/*".format(tgz_name))
     if result.succeeded:
         return tgz_name
