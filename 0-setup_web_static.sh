@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # Sets up a web server (Nginx) for deployment of web_static.
 
-# Installs Nginx and root directories
 apt-get update &&
 	apt-get install -y nginx
 
@@ -12,7 +11,6 @@ ln -sf /data/web_static/releases/test/ /data/web_static/current
 chown -R ubuntu /data/
 chgrp -R ubuntu /data/
 
-# Nginx configuration
 printf %s "server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
