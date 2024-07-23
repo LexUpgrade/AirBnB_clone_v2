@@ -3,23 +3,14 @@
 
 # Installs Nginx and root directories
 apt-get update &&
-	apt-get install nginx -y
-ufw allow 'Nginx HTTP'
+	apt-get install -y nginx
+
 mkdir -p /data/web_static/releases/test/
 mkdir -p /data/web_static/shared/
+echo "Holberton School" > /data/web_static/releases/test/index.html
+ln -sf /data/web_static/releases/test/ /data/web_static/current
 chown -R ubuntu /data/
 chgrp -R ubuntu /data/
-
-# Creates an HTML file
-printf %s "<html>
-	<head>
-	</head>
-	<body>
-		<h1>ALX - The Best School Ever... \o/ yhhh!</h1>
-	</body>
-</html>
-" > /data/web_static/releases/test/index.html
-ln -fs /data/web_static/releases/test /data/web_static/current
 
 # Nginx configuration
 printf %s "server {
@@ -28,12 +19,10 @@ printf %s "server {
 
 	root /var/www/html;
 	index index.html index.htm;
-
-	server_name _;
 	add_header X-Served-By $HOSTNAME;
 
 	location /hbnb_static {
-		alias /data/web_static/current/test;
+		alias /data/web_static/current;
 		index index.html index.htm;
 	}
 
