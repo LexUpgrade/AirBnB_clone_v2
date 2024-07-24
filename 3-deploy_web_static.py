@@ -10,10 +10,7 @@ import os
 from fabric.api import env, put, run, local
 from datetime import datetime
 
-
 env.hosts = ["100.25.167.114", "54.160.69.233"]
-env.user = "ubuntu"
-env.key_filename = "~/.ssh/school"
 
 
 def do_pack():
@@ -63,5 +60,4 @@ def deploy():
     archive_path = do_pack()
     if archive_path is not None:
         return (do_deploy(archive_path))
-    else:
-        return False
+    return False
