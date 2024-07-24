@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-    FabFile to generates a .tgz archive from the contents of web_static.
+    Defien a FabFile 'do_deploy'.
 """
 from os.path import exists
 from fabric.api import *
@@ -8,7 +8,7 @@ from fabric.api import *
 
 env.hosts = ["web-01.lexcraft.tech", "web-02.lexcraft.tech"]
 env.ubuntu = "ubuntu"
-env.key_filename = "~/.ssh/id_rsa"
+env.key_filename = "~/.ssh/school"
 
 
 def do_deploy(archive_path):
