@@ -8,8 +8,10 @@ app = Flask(__name__)
 
 
 @app.route("/states_list", strict_slashes=False)
-def state_list():
-    """Displays a HTML page."""
+def states_list():
+    """Displays a HTML pagei with a list of all States objects in DBStorage.
+    Satets are sorted by name.
+    """
     states = storage.all("State")
     return render_template("7-states_list.html", states=states)
 
@@ -21,5 +23,4 @@ def teardown(exc):
 
 
 if __name__ == "__main__":
-    """Starts the web application and set the host to '0.0.0.0'."""
     app.run(host="0.0.0.0")
